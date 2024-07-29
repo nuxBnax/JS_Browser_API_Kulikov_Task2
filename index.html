@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Test task2</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="picture__box">
+            <div data-id="1" class="picture">
+                <img src="./img/img_1.jpg" alt="" class="picture__img">
+                <h2 class="picture__title">Первый слайд</h2>
+            </div>
+            <div data-id="2" class="picture">
+                <img src="./img/img_2.jpg" alt="" class="picture__img">
+                <h2 class="picture__title">Второй слайд</h2>
+            </div>
+            <div data-id="3" class="picture">
+                <img src="./img/img_3.jpg" alt="" class="picture__img">
+                <h2 class="picture__title">Третий слайд</h2>
+            </div>
+            <div data-id="4" class="picture">
+                <img src="./img/img_4.jpg" alt="" class="picture__img">
+                <h2 class="picture__title">Четвертый слайд</h2>
+            </div>
+            <button class="btn__back">
+                <div class="btn__left-arrow"></div>
+            </button>
+            <button class="btn__forward">
+                <div class="btn__right-arrow"></div>
+            </button>
+
+            <div class="dot">
+                <a class="dot-link" href="#">
+                    <div data-dot="1" class="dot-box"></div>
+                </a>
+                <a class="dot-link" href="#">
+                    <div data-dot="2" class="dot-box"></div>
+                </a>
+                <a class="dot-link" href="#">
+                    <div data-dot="3" class="dot-box"></div>
+                </a>
+                <a class="dot-link" href="#">
+                    <div data-dot="4" class="dot-box"></div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let pictures = [];
+        const pictureEls = document.querySelectorAll('.picture');
+        const forwardBtn = document.querySelector('.btn__forward');
+        const backBtn = document.querySelector('.btn__back');
+        const dotEl = document.querySelector('.dot');
+        const dotBoxElms = dotEl.querySelectorAll('.dot-box');
+
+        localStorage.setItem('switcher', 1);
+        
+        dotBoxElms.forEach(el => {
+            switcher = Number(localStorage.getItem('switcher'));
+                if (Number(el.getAttribute('data-dot')) === switcher) {
+                    el.style.backgroundColor = "#0c5579";
+                    el.style.border = "3px solid #0c5579";
+                }
+            });
+
+        pictureEls.forEach(item => {
+            const pictureId = item.getAttribute('data-id');
+            pictures.push(pictureId);
+        });
+
+        pictureEls.forEach(picture => {
+            const pictureId = picture.getAttribute('data-id');
+            picture.classList.add('d-none');
+            switcher = localStorage.getItem('switcher');
+            if (switcher === pictureId) {
+                picture.classList.add('d-block');
+            }
+        });
+
+        forwardBtn.addEventListener('click', () => {
+            switcher = Number(localStorage.getItem('switcher'));
+            switcher++;
+            if (switcher > pictures.length) {
+                switcher = 1;
+                localStorage.setItem('switcher', switcher);
+            }
+            pictureEls.forEach(picture => {
+                const pictureId = picture.getAttribute('data-id');
+                picture.classList.remove('d-block')
+                picture.classList.add('d-none');
+                if (switcher === Number(pictureId)) {
+                    console.log(switcher);
+                    picture.classList.add('d-block');
+                }
+            });
+
+            localStorage.setItem('switcher', switcher);
+
+            dotBoxElms.forEach(el => {
+                el.style.backgroundColor = "";
+                el.style.border = "";
+                if (Number(el.getAttribute('data-dot')) === switcher) {
+                    el.style.backgroundColor = "#0c5579";
+                    el.style.border = "3px solid #0c5579";
+                }
+            });
+        });
+
+        backBtn.addEventListener('click', () => {
+            switcher = Number(localStorage.getItem('switcher'));
+            switcher--;
+            if (switcher < 1) {
+                switcher = pictures.length;
+                localStorage.setItem('switcher', switcher);
+            }
+            pictureEls.forEach(picture => {
+                const pictureId = picture.getAttribute('data-id');
+                picture.classList.remove('d-block')
+                picture.classList.add('d-none');
+                if (switcher === Number(pictureId)) {
+                    picture.classList.add('d-block');
+                }
+            });
+
+            localStorage.setItem('switcher', switcher);
+
+            dotBoxElms.forEach(el => {
+                el.style.backgroundColor = "";
+                el.style.border = "";
+                if (Number(el.getAttribute('data-dot')) === switcher) {
+                    el.style.backgroundColor = "#0c5579";
+                    el.style.border = "3px solid #0c5579";
+                }
+            });
+        });
+
+        dotEl.addEventListener('click', ({ target }) => {
+            if (!target.classList.contains('dot-box')) {
+                return;
+            }
+            const dotId = target.getAttribute('data-dot');
+            switcher = dotId;
+            localStorage.setItem('switcher', dotId);
+            pictureEls.forEach(picture => {
+                const pictureId = picture.getAttribute('data-id');
+                picture.classList.remove('d-block')
+                picture.classList.add('d-none');
+                if (switcher === pictureId) {
+                    picture.classList.add('d-block');
+                }
+            });
+            
+            dotBoxElms.forEach(el => {
+                el.style.backgroundColor = "";
+                el.style.border = "";
+                if (el === target) {
+                    target.style.backgroundColor = "#0c5579";
+                    target.style.border = "3px solid #0c5579";
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
